@@ -1,0 +1,9 @@
+<div
+  [class]="
+    ' w-full transition-height ease-in-out ease-in-out duration-300 overflow-hidden rounded-b-xl text-sm w-full ' +
+    (!closed ? 'max-h-[0px] ' : 'max-h-[12.25rem]') +
+    ' z-0 flex flex-col no-scrollbar bg-white ' +
+    (borderClass ? borderClass : 'border-gray-blue border-2 border-t')
+  ">
+  <ng-content></ng-content>
+</div>

@@ -1,0 +1,41 @@
+
+<div class="w-full">
+    @if (filterConfig) {
+      <app-form-filter
+        [setConfig]="filterConfig"
+        [data]="filterData"
+        [columnConfig]="config"
+        (applyFilterEvent)="filter($event)"></app-form-filter>
+    }
+    <div class="text-xl font-medium py-2 text-dark-blue">
+      {{ tableName }}
+    </div>
+    <div class="overflow-x-auto flex-col">
+      <div class="min-w-max">
+        <div class="flex w-full justify-between bg-gray-2light p-5 py-6 text-dark-blue gap-2">
+          @for (configValue of showConfig; track $index) {
+            <div [class]="configValue.columClass + ' font-medium'">
+              @for (title of configValue?.title; track $index) {
+                <div>
+                  {{ title }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+        @for (item of data; track $index) {
+          <div class="flex w-full justify-between p-5 border-b-2 border-gray-2light text-dark-blue gap-2">
+            @for (configValue of showConfig; track $index) {
+              <div [class]="configValue.columClass">
+                <ng-container
+                  *ngComponentOutlet="
+                    configValue?.type || null;
+                    inputs: { item: item, configValue: configValue }
+                  "></ng-container>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>

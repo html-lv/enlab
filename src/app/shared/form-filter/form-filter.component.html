@@ -1,0 +1,49 @@
+<div class="flex flex-col gap-2">
+    <div class="flex flex-wrap gap-2 relative">
+      @for (item of config; track $index; let configInx = $index) {
+        <div class="">
+          @if (!data[item.id]) {
+            <app-base-input
+              [inputLabel]="item.title"
+              [saveInputValue]="filtersValues[configInx]"
+              (saveInputValueEvent)="saveInputValue($event, configInx)"></app-base-input>
+          } @else {
+            <app-search-input
+              [inputLabel]="item.title"
+              [itemsId]="item.id"
+              [saveInputValue]="filtersValues[configInx]"
+              [data]="data[item.id]"
+              (saveInputValueEvent)="saveInputValue($event, configInx)"></app-search-input>
+          }
+        </div>
+      }
+    </div>
+    <div class="flex justify-end gap-2 font-semibold">
+      @if (this.config?.length) {
+        <div
+          class="p-2 max-w-[13rem] w-full border-2 border-dark-bluee rounded-lg flex justify-center cursor-pointer"
+          (click)="reset()">
+          RESET
+        </div>
+        <div
+          class="p-2 max-w-[13rem] w-full bg-dark-blue text-white rounded-lg flex justify-center cursor-pointer"
+          (click)="apply()">
+          APPLY FILTERS
+        </div>
+      }
+      @if (needSettings) {
+        <div
+          class="p-2 max-w-[13rem] w-full border-2 border-dark-blue rounded-lg flex justify-center cursor-pointer">
+          SETTINGS
+        </div>
+      }
+      @if (addNewTableItem?.need) {
+        <div
+          class="p-2 max-w-[13rem] w-full bg-dark-blue text-white rounded-lg flex justify-center cursor-pointer"
+          (click)="addNewTableItem.function()">
+          {{ addNewTableItem.newItemName }}
+        </div>
+      }
+    </div>
+  </div>
+  

@@ -1,0 +1,58 @@
+<div
+  [class]="
+    'relative p-3 pr-4 bg-white flex flex-wrap items-center gap-1 flex-1 border-2 border-gray-blue' +
+    (open && filteredData.length > 0 ? ' rounded-t-lg' : ' rounded-lg')
+  "
+  (click)="clickOnInput()">
+  @for (filtersValue of saveInputValue; track $index) {
+    <div
+      class="flex justify-center items-center text-gray-light text-xs bg-gray-blue rounded-lg p-1 gap-0.5 max-h-[24px]">
+      <span>{{ filtersValue | truncate: 20 }}</span>
+      <span class="cursor-pointer" (click)="deletFilter($index)">x</span>
+    </div>
+  }
+  <div class="w-auto group max-w-full">
+    <form [formGroup]="form">
+      <input
+        class="focus:border-0 focus:outline-none w-full"
+        type="text"
+        [id]="'inputId' + inputLabel"
+        formControlName="inputValue" />
+      <div
+        [class]="
+          'absolute left-[10px] transition-position group-focus-within:top-[-8px] text-base text-darked-grey leading-3 bg-white p-0.5 rounded-md ' +
+          (form.get('inputValue')?.value || saveInputValue.length > 0 ? 'top-[-8px]' : 'top-[14px]')
+        ">
+        {{ inputLabel }}
+      </div>
+    </form>
+  </div>
+
+  <div [class]="'absolute right-0 top-0 p-2 py-3'">
+    <mat-icon
+      svgIcon="select-box-arrow"
+      aria-hidden="false"
+      [class]="
+        'cursor-pointer transition-transform fill-gray-light ' +
+        (open && filteredData.length > 0 ? 'rotate-180' : 'rotate-0')
+      "></mat-icon>
+  </div>
+
+  <div
+    [class]="
+      'absolute left-[-2px] top-[100%] w-[calc(100%+4px)] z-[1] ' +
+      (open && filteredData.length > 0 ? 'block' : 'hidden')
+    ">
+    <app-accordion [closed]="open && filteredData.length > 0" borderClass="border-gray-blue border-2 border-t p-2">
+      <div class="flex flex-col gap-1 overflow-y-auto pr-1">
+        @for (item of filteredData; track $index) {
+          <button
+            class="cursor-pointer hover:bg-gray-blue text-start text-base text-dark-blue p-1 rounded-lg"
+            (click)="enterClick(item.title || item[itemsId])">
+            {{ item.title || item[itemsId] }}
+          </button>
+        }
+      </div>
+    </app-accordion>
+  </div>
+</div>
