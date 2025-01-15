@@ -1,9 +1,16 @@
 <div class="max-h-screen overflow-y-auto p-5">
     <app-table-template
         [setConfig]="employeeTableConfig"
-        [setData]="employeeData"
+        [setData]="paginatedData"
         [filterConfig]="filterConfig"
         [filterData]="filterData"
         class="text-base"
     ></app-table-template>
+    <mat-paginator 
+        [length]="employeeData.length" 
+        [pageSize]="itemsPerPage" 
+        [pageSizeOptions]="[5, 10, 20]" 
+        (page)="onPageChange($event)"
+        aria-label="Employee paginator"
+    ></mat-paginator>
 </div>

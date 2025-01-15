@@ -1,0 +1,48 @@
+<div class="flex flex-col p-4">
+  <div class="flex justify-center items-center">
+    <h2>Employee tags</h2>
+  </div>
+  <div class="grid grid-rows-3 gap-2">
+      <mat-accordion class="border border-gray-blue rounded-lg">
+        @for(tag of userTags; track $index) {
+        <div class="flex items-center justify-between gap-2 p-2 ">
+          <span>{{ tag.slug }}</span>
+          <button
+            class="h-full flex items-center cursor-pointer"
+            (click)="togglePanel($index, tag.slug)"
+          >
+            <mat-icon svgIcon="edit" aria-hidden="false" aria-label="Edit tag"></mat-icon>
+          </button>
+        </div>
+        <mat-expansion-panel
+          [expanded]="panelOpenState === $index"
+          (opened)="panelOpenState = $index"
+          (closed)="panelOpenState = null"
+        >
+          <div class="flex flex-col p-2">
+            <div lass="flex items-center justify-center">
+              <span for="tagName">Edit Tag:</span>
+            </div>
+            <input
+              class="border border-gray-blue p-2"
+              id="tagName"
+              [(ngModel)]="tempEditValue"
+              placeholder="Enter new tag name"
+            />
+          </div>
+          <div class="flex items-center justify-center">
+            <div class="flex justify-between gap-2">
+              <button class="border border-gray-blue px-2 py-1 rounded-xl bg-salad" (click)="saveTag($index)">Save</button>
+              <button class="border border-gray-blue px-2 py-1 rounded-xl bg-red" (click)="saveTag($index)">Delete</button>
+            </div>
+          </div>
+
+        </mat-expansion-panel>
+      }
+      </mat-accordion>
+
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>
