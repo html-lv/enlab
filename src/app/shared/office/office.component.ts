@@ -10,6 +10,8 @@ import { TagsModalComponent } from '../tagos/tags-modal/tags-modal.component';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+import { EmployeeServiceService } from '../../core/services/employee-service.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-office',
@@ -19,6 +21,7 @@ import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
   styleUrl: './office.component.scss'
 })
 export class OfficeComponent {
+  unsubus$: Subject<boolean> = new Subject();
   @ViewChild(MatPaginator) paginator!: MatPaginator
   dialog = inject(MatDialog);
   userTags: any[] = []
@@ -75,7 +78,9 @@ export class OfficeComponent {
     office: [{ office: 'Riga' }, { office: 'Tallinn' }, { office: 'Vilnus' }],
   };
 
-  constructor(){
+  constructor(
+    private employ: EmployeeServiceService
+  ){
     const iconRegistry = inject(MatIconRegistry);
     const sanitizer = inject(DomSanitizer);
     iconRegistry.addSvgIcon('edit', sanitizer.bypassSecurityTrustResourceUrl('edit.svg'));
@@ -83,6 +88,12 @@ export class OfficeComponent {
 
   ngOnInit(): void {
     this.paginateData();
+  }
+
+  getEmployee(){
+    this.employ.getEmployees().pipe(takeUntil(this.unsubus$)).subscribe((res) => {
+      console.log(res)
+    })
   }
 
   paginateData(): void {
@@ -119,8 +130,10 @@ export class OfficeComponent {
 
   updateEmployees(filter: any){
     this.employeeData = [];
-    
   }
   
-
+  ngOnDestroy(): void {
+    this.unsubus$.next(true);
+    this.unsubus$.complete();
+  }
 }
