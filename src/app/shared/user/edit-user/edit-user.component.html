@@ -1,0 +1,23 @@
+<div class="p-5">
+    <app-form-builder
+    [setForm]="formList"
+    [resetTrigger$]="resetTrigger$"
+    [saveTrigger$]="saveTrigger$"
+    (saveDataEmitter)="updateData($event)"
+    >
+    </app-form-builder>
+  
+    <div class="flex justify-end gap-2 font-semibold pt-2">
+      <div
+        class="p-2 max-w-[13rem] w-full bg-dark-blue text-white rounded-lg flex justify-center cursor-pointer"
+        (click)="saveAllTabs()">
+        SAVE
+      </div>
+      <div
+        class="p-2 max-w-[13rem] w-full border-2 border-dark-bluee rounded-lg flex justify-center cursor-pointer"
+        (click)="resetTab()">
+        RESET
+      </div>
+    </div>
+  </div>
+  

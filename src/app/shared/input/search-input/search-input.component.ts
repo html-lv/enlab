@@ -39,12 +39,6 @@ export class SearchInputComponent {
   });
 
   constructor(private elementRef: ElementRef){
-    const iconRegistry = inject(MatIconRegistry);
-    const sanitizer = inject(DomSanitizer);
-    iconRegistry.addSvgIcon(
-      'select-box-arrow',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/select-box-arrow.svg')
-    );
   }
 
   @HostListener('document:click', ['$event'])
@@ -65,11 +59,11 @@ export class SearchInputComponent {
   }
 
   enterClick(item: any) {
-    console.log(item);
 
     if (!this.saveInputValue.includes(item)) {
       this.saveInputValue.push(item);
     }
+    console.log(this.saveInputValue)
     this.saveInputValueEvent.emit(this.saveInputValue);
   }
 

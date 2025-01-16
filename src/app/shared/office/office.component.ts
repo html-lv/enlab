@@ -8,10 +8,13 @@ import { ActionComponent } from '../table/table-template/column-type/action/acti
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TagsModalComponent } from '../tagos/tags-modal/tags-modal.component';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
-import { EmployeeServiceService } from '../../core/services/employee-service.service';
+import { MatIconModule } from '@angular/material/icon';
+import { EmployeeServiceService } from '../../core/services/employee/employee-service.service';
 import { Subject, takeUntil } from 'rxjs';
+import { DateComponent } from '../table/table-template/column-type/date/date.component';
+import { EditUserComponent } from '../user/edit-user/edit-user.component';
+import { UserActionComponent } from '../table/table-template/column-type/user-action/user-action.component';
+import { CreateUserComponent } from '../user/create-user/create-user.component';
 
 @Component({
   selector: 'app-office',
@@ -29,10 +32,16 @@ export class OfficeComponent {
   currentPage = 0;
 
   employeeTableConfig: TableConfig[] = [
-    { key: 'name', title: ['Name'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
-    { key: 'surname', title: ['Surname'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
+    { 
+      key: 'first_name', title: ['Name'], 
+      type: UserActionComponent, 
+      function: (item: any) => [() => this.isVisible(item), () => this.editUser(item)], 
+      show: true, 
+      columClass: 'flex-1' 
+    },
+    { key: 'last_name', title: ['Surname'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
     { key: 'office', title: ['City'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
-    { key: 'birtday', title: ['Birthday'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
+    { key: 'birth_day', title: ['Birthday'], type: DateComponent, show: true, columClass: 'flex-1' },
     { key: 'phone', title: ['Phone'], type: BasicTextComponent, show: true, columClass: 'flex-1' },
     {
       key: 'tags',
@@ -44,34 +53,15 @@ export class OfficeComponent {
     },
   ]
 
-  employeeData: EmployeeInterface[] = [
-    {name: 'Ojars', surname: 'Gundejko', office: 'Tallinn', birtday: '12.03.2001', phone: '20202020', tags: [
-      {slug: 'Salary'}
-    ]},
-    {name: 'Viktor', surname: 'Nices', office: 'Riga', birtday: '31.10.2005', phone: '29102312', tags: [
-      {slug: 'Illness'}
-    ]},
-    {name: 'Ojars', surname: 'Ozolonis', office: 'Vilnus', birtday: '11.02.1993', phone: '31231233'},
-    {name: 'Elena', surname: 'Nices', office: 'Riga', birtday: '31.05.1994', phone: '83817231'},
-    {name: 'Ojars', surname: 'Palmvs', office: 'Tallinn', birtday: '13.03.2001', phone: '83861233', tags: [
-      {slug: 'Vacation'}
-    ]},
-    {name: 'Robin', surname: 'Draugi', office: 'Tallinn', birtday: '26.01.1994', phone: '30102323'},
-    {name: 'Ojars', surname: 'Nices', office: 'Riga', birtday: '13.08.1895', phone: '36772733', tags: [
-      {slug: 'illness'},
-      {slug: 'vacations'},
-    ]},
-    {name: 'Olof', surname: 'Meister', office: 'Riga', birtday: '07.03.1977', phone: '03030212'},
-  ];
+  employeeData: EmployeeInterface[] = [];
   paginatedData: any[] = [];
 
   filterConfig = {
     filters: [
-      { id: 'name', title: 'Name', query: { type: 'string', path: 'name', combination: 'or' } },
-      { id: 'surname', title: 'Surname', query: { type: 'string', path: 'surname', combination: 'or' } },
       { id: 'office', title: 'Office', query: { type: 'string', path: 'office', combination: 'or' } }
     ],
-    needSettings: false
+    needSettings: false,
+    addNewTableItem: { need: true, newItemName: '+ Add Employee', function: () => this.addUserModal() },
   }
 
   filterData = {
@@ -79,23 +69,33 @@ export class OfficeComponent {
   };
 
   constructor(
-    private employ: EmployeeServiceService
+    private employ: EmployeeServiceService,
   ){
-    const iconRegistry = inject(MatIconRegistry);
-    const sanitizer = inject(DomSanitizer);
-    iconRegistry.addSvgIcon('edit', sanitizer.bypassSecurityTrustResourceUrl('edit.svg'));
   }
 
   ngOnInit(): void {
-    this.paginateData();
+    this.getEmployee()  
+    
   }
 
   getEmployee(){
-    this.employ.getEmployees().pipe(takeUntil(this.unsubus$)).subscribe((res) => {
-      console.log(res)
+    this.employ.getEmployees()
+    .pipe(takeUntil(this.unsubus$))
+    .subscribe(res => {
+      this.employeeData = res;
+      this.paginateData();
     })
   }
 
+  getFIlteredEmployee(filters: string) {
+    this.employ.getEmployees(filters) 
+      .pipe(takeUntil(this.unsubus$))
+      .subscribe((res) => {
+        this.employeeData = res;  
+        this.paginateData();
+      });
+  }
+  
   paginateData(): void {
     const startIndex = this.currentPage * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
@@ -120,8 +120,20 @@ export class OfficeComponent {
       width: '350px',
     });
   }
-  
 
+  editUser(employee: EmployeeInterface) {
+    this.dialog.open(EditUserComponent, {
+      data: { employee },
+      width: '550px',
+    });
+  }
+
+  addUserModal(){
+    this.dialog.open(CreateUserComponent, {
+      width: '550px',
+    });
+  }
+  
   onPageChange(event: PageEvent): void {
     this.itemsPerPage = event.pageSize;
     this.currentPage = event.pageIndex;

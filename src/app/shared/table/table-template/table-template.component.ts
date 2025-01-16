@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TableConfig } from '../../../core/interfaces/table-interface';
 import { CommonModule } from '@angular/common';
 import { FormFilterComponent } from '../../form-filter/form-filter.component';
@@ -24,7 +24,7 @@ export class TableTemplateComponent {
   @Input() filterConfig: any;
   @Input() filterData: any;
 
-  @Output() applyFilterEvent = new EventEmitter<string[]>();
+  @Output() applyFilterEvent = new EventEmitter<any>();
 
   unsubus$: Subject<boolean> = new Subject();
   data: any[] = [];
@@ -37,12 +37,6 @@ export class TableTemplateComponent {
   ) {}
 
   ngOnInit(): void {
-    // this.modalDataTransfer.onSelectedItemInSelectColums
-    //   .pipe(takeUntil(this.unsubus$))
-    //   .subscribe((res: tableCofig[]) => {
-    //     this.config = res;
-    //     this.showConfig = res.filter((item: TableCofig) => item.show);
-    //   });
   }
 
   filter(filters: any) {

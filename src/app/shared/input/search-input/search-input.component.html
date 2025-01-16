@@ -27,17 +27,6 @@
       </div>
     </form>
   </div>
-
-  <div [class]="'absolute right-0 top-0 p-2 py-3'">
-    <mat-icon
-      svgIcon="select-box-arrow"
-      aria-hidden="false"
-      [class]="
-        'cursor-pointer transition-transform fill-gray-light ' +
-        (open && filteredData.length > 0 ? 'rotate-180' : 'rotate-0')
-      "></mat-icon>
-  </div>
-
   <div
     [class]="
       'absolute left-[-2px] top-[100%] w-[calc(100%+4px)] z-[1] ' +

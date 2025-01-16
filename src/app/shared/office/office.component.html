@@ -5,6 +5,7 @@
         [filterConfig]="filterConfig"
         [filterData]="filterData"
         class="text-base"
+        (applyFilterEvent)="getFIlteredEmployee($event)"
     ></app-table-template>
     <mat-paginator 
         [length]="employeeData.length" 

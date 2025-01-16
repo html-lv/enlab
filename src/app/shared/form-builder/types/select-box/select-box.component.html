@@ -1,0 +1,46 @@
+<div class="h-full flex flex-col">
+    <div class="p-1 text-gray-light text-base">{{ label }}</div>
+    <div [class]="'border-2 border-grey-border block-form-input rounded-lg'">
+      <div
+        [class]="'relative p-3 pb-0 pr-4 flex flex-wrap items-center gap-0 flex-1 rounded-lg'"
+        (click)="clickOnInput()">
+        <div class="flex flex-wrap items-center gap-1 flex-1">
+          @for (filtersValue of saveInputValue; track $index) {
+            <div
+              class="flex justify-center items-center text-gray-light text-xs bg-gray-blue rounded-lg p-1 gap-0.5 max-h-[24px] cursor-pointer"
+              (click)="deletFilter($event, $index)">
+              <span>{{ filtersValue.title | truncate: 20 }}</span>
+            </div>
+          }
+          <form [formGroup]="form">
+            <div class="w-auto group max-w-full">
+              <input
+                class="focus:border-0 focus:outline-none w-full"
+                type="text"
+                [id]="'inputId' + label"
+                value="''"
+                formControlName="inputValue" />
+            </div>
+          </form>
+        </div>
+        <div
+          [class]="
+            '
+            left-[-2px] top-[100%] w-[calc(100%+4px)] ' + (open && filteredData.length > 0 ? 'z-[1]' : 'z-[-4]')
+          ">
+          <app-accordion [closed]="open && filteredData.length > 0" borderClass="border-t-0 pb-3">
+            <div class="flex flex-col gap-1 overflow-y-auto p-1">
+              @for (item of filteredData; track $index) {
+                <button
+                  class="cursor-pointer hover:bg-gray-blue text-start text-base text-dark-blue p-1 rounded-lg"
+                  (click)="enterClick(item)">
+                  {{ item.title }}
+                </button>
+              }
+            </div>
+          </app-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+  

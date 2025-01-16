@@ -12,7 +12,7 @@ import { TableConfig } from '../../core/interfaces/table-interface';
   styleUrl: './form-filter.component.scss'
 })
 export class FormFilterComponent {
-  @Output() applyFilterEvent = new EventEmitter<string[]>();
+  @Output() applyFilterEvent = new EventEmitter<string>();
   @Input() data: any;
   @Input() columnConfig: TableConfig[] = [];
   @Input() set setConfig(value: any) {
@@ -37,30 +37,28 @@ export class FormFilterComponent {
   }
   reset() {
     this.filtersValues = Array.from({ length: this.config.length }, () => []);
-    this.applyFilterEvent.emit([]);
+    this.applyFilterEvent.emit();
   }
 
   apply() {
     const applyFilter = this.config.reduce((acc: any, element: any, index: number) => {
       if (this.filtersValues[index].length > 0) {
         let filterArr = this.filtersValues[index];
-        if (element?.query.type === 'number') {
-          filterArr = filterArr.map(parseFloat);
+  
+        if (element?.query.type !== 'string') {
+          return acc;
         }
-        if (element?.query.type === 'boolean') {
-          filterArr = filterArr.map((item: any) => (item == 'SHOW' ? true : false));
-        }
-        console.log(filterArr);
 
-        acc[element.id] = {
-          items: filterArr,
-          quary: element?.query,
-        };
+        const filterValue = filterArr.join(',');
+        acc[element.id] = filterValue;
       }
       return acc;
     }, {});
-    console.log(this.filtersValues);
-
-    this.applyFilterEvent.emit(applyFilter);
+  
+    console.log(applyFilter);
+  
+    this.applyFilterEvent.emit(Object.values(applyFilter).join(','));
   }
+  
+  
 }
